@@ -4,9 +4,23 @@ const app = express()
 const morgan = require('morgan')
 const mysql = require('mysql')
 
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.urlencoded({extended: false}))
+
 app.use(express.static('./public'))
 
 app.use(morgan('short'))
+
+app.post('/user_create', (req, res) => {
+  console.log("Trying to create a new user")
+  console.log("How to get the data")
+
+  const firstName = req.body.create_first_name
+  const lastName = req.body.create_last_name
+
+  res.end()
+})
 
 app.get('/user/:id', (req, res) => {
   console.log("Fetching user with id: " + req.params.id)
