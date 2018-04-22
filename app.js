@@ -19,17 +19,32 @@ app.post('/user_create', (req, res) => {
   const firstName = req.body.create_first_name
   const lastName = req.body.create_last_name
 
-  res.end()
+  const queryString = "INSERT INTO users (first_name, last_name) VALUES (?, ?)"
+  getConnection().query(queryString, [firstName, lastName], (err, results, fields) => {
+    if (err) {
+      console.log("Failed to insert new user: " + err)
+      res.sendStatus(500)
+      return
+    }
+
+    console.log("Inserted a new user with id: ", results);
+    res.end()
+  })
+  
 })
 
-app.get('/user/:id', (req, res) => {
-  console.log("Fetching user with id: " + req.params.id)
-
-  const connection = mysql.createConnection({
+function getConnection() {
+  return mysql.createConnection({
     host: 'localhost',
     user: 'root',
     database: 'lbta_mysql'
   })
+}
+
+app.get('/user/:id', (req, res) => {
+  console.log("Fetching user with id: " + req.params.id)
+
+  const connection = getConnection()
 
   const userId = req.params.id
   const queryString = "SELECT * FROM users WHERE ID = ?"
@@ -68,11 +83,7 @@ app.get("/users", (req, res) => {
 
   // res.send("Nodemon auto updates when I save this file")
 
-  const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    database: 'lbta_mysql'
-  })
+  const connection = getConnection()
 
   const queryString = "SELECT * FROM users"
 
