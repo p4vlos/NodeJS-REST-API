@@ -4,7 +4,9 @@ const app = express()
 const morgan = require('morgan')
 const mysql = require('mysql')
 
-app.use(morgan('combined'))
+app.use(express.static('./public'))
+
+app.use(morgan('short'))
 
 app.get('/user/:id', (req, res) => {
   console.log("Fetching user with id: " + req.params.id)
