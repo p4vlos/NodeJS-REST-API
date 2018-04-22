@@ -46,11 +46,36 @@ app.get("/", (req, res) => {
 })
 
 app.get("/users", (req, res) => {
-  var user1 = {firstName: "Stephen", lastName: "Curry"}
-  const user2 = {firstName: "Kevin", lastName: "Durant"}
-  res.json([user1, user2])
+  // var user1 = {firstName: "Stephen", lastName: "Curry"}
+  // const user2 = {firstName: "Kevin", lastName: "Durant"}
+  // res.json([user1, user2])
 
   // res.send("Nodemon auto updates when I save this file")
+
+  const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    database: 'lbta_mysql'
+  })
+
+  const queryString = "SELECT * FROM users"
+
+  connection.query(queryString, (err, rows, fields) => {
+
+    if (err) {
+      console.log("Failed to query for users: " + err)
+      res.sendStatus(500)
+      return
+    }
+
+    console.log("I think we fetched users successfully")
+    
+    const users = rows.map((row) => {
+      return {firstName: row.first_name, lastName: row.last_name}
+    })
+
+    res.json(rows)
+  })
 })
 
 // localhost:3003
